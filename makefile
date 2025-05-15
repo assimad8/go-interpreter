@@ -1,2 +1,4 @@
 run:
-	@go run cmd/main.cpp
+	@go run cmd/main.go
+test:
+	@go test ./internal/lexer
