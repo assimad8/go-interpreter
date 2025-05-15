@@ -33,7 +33,57 @@ func (lex *Lexer) NextToken() token.Token {
 
 	switch lex.ch {
 	case '=':
-		tk = newToken(token.ASSIGN,lex.ch)
+		if (lex.peekChar() == '='){
+			ch := lex.ch
+			lex.readChar()
+			tk = token.Token{Type: token.EQ, Literal: string(ch) + string(lex.ch)}
+			}else{
+				tk = newToken(token.ASSIGN,lex.ch)
+			}
+		case '+':
+			if(lex.peekChar() == '+'){
+			ch := lex.ch
+			lex.readChar()
+			tk = token.Token{Type: token.PLUS_PLUS, Literal: string(ch) + string(lex.ch)}
+		}else{
+			tk = newToken(token.PLUS,lex.ch)
+		}
+	case '-':
+		if(lex.peekChar() == '-'){
+			ch := lex.ch
+			lex.readChar()
+			tk = token.Token{Type: token.MINUS_MINUS, Literal: string(ch) + string(lex.ch)}
+		}else{
+			tk = newToken(token.MINUS,lex.ch)
+		}
+	case '*':
+		tk = newToken(token.ASTERISK,lex.ch)
+	case '/':
+		tk = newToken(token.SLASH,lex.ch)
+	case '>':
+		if(lex.peekChar()=='='){
+			ch := lex.ch
+			lex.readChar()
+			tk = token.Token{Type: token.GT_EQ,Literal: string(ch)+string(lex.ch)}
+		}else{
+			tk = newToken(token.GT,lex.ch)
+		}
+	case '<':
+		if(lex.peekChar()=='='){
+			ch := lex.ch
+			lex.readChar()
+			tk = token.Token{Type:token.LT_EQ,Literal: string(ch)+string(lex.ch)}
+		}else{
+			tk = newToken(token.LT,lex.ch)
+		}
+	case '!':
+		if(lex.peekChar()=='='){
+			ch := lex.ch
+			lex.readChar()
+			tk = token.Token{Type: token.NOT_EQ, Literal: string(ch) + string(lex.ch)}
+		}else{
+			tk = newToken(token.BANG,lex.ch)
+		}
 	case ';':
 		tk = newToken(token.SEMICOLON,lex.ch)
 	case ',':
@@ -46,8 +96,6 @@ func (lex *Lexer) NextToken() token.Token {
 		tk = newToken(token.LBRACE,lex.ch)
 	case '}':
 		tk = newToken(token.RBRACE,lex.ch)
-	case '+':
-		tk = newToken(token.PLUS,lex.ch)
 	case 0:
 		tk.Literal = ""
 		tk.Type = token.EOF
@@ -59,6 +107,7 @@ func (lex *Lexer) NextToken() token.Token {
 		}else if isNumber(lex.ch){
 			tk.Type = token.INT
 			tk.Literal = lex.readNumber()
+			return tk
 		}else{
 			tk = newToken(token.ILLEGAL,lex.ch)
 		}
@@ -84,6 +133,13 @@ func (lex *Lexer) readNumber() string {
 		lex.readChar()
 	}
 	return lex.input[position:lex.position]
+}
+
+func (lex *Lexer) peekChar() byte {
+	if(lex.readPosition>=len(lex.input)){
+		return 0
+	}
+	return lex.input[lex.readPosition]
 }
 
 func (lex *Lexer) isSkipped() bool {
