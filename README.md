@@ -25,12 +25,15 @@ The project is organized into the following directories:
    git clone https://github.com/yourusername/go-interpreter.git
    cd go-interpreter
 2. Build the project:
-    go build ./...
+    - go build ./...
 2. Run the REPL:
-    go run cmd/main.go
+    - go run cmd/main.go
 
 ## Example Usage
 >> let x = 5;
+
 >> x + 10;
+
 15
+
 >> quit
