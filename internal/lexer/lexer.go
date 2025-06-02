@@ -99,6 +99,12 @@ func (lex *Lexer) NextToken() token.Token {
 	case 0:
 		tk.Literal = ""
 		tk.Type = token.EOF
+	case '"':
+		tk.Type 	= token.STRING
+		tk.Literal	= lex.readString()
+	case '\'':
+		tk.Type 	= token.STRING
+		tk.Literal	= lex.readString()
 	default:
 		if isLetter(lex.ch) {
 			tk.Literal = lex.readIdentifier()
@@ -118,6 +124,18 @@ func (lex *Lexer) NextToken() token.Token {
 
 func newToken(tokenType token.TokenType,ch byte) token.Token {
 	return token.Token{Type:tokenType,Literal:string(ch)}
+}
+
+func (lex *Lexer) readString() string {
+	position := lex.position+1
+	char := lex.ch
+	for {
+		lex.readChar()
+		if lex.ch == char || lex.ch == 0 {
+			break
+		}
+	}
+	return lex.input[position:lex.position]
 }
 
 func (lex *Lexer) readIdentifier() string {
