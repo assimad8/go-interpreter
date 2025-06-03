@@ -298,3 +298,74 @@ func (sl *StringLiteral) String() string {
 	return sl.Token.Literal
 }
 
+// Array literal
+type ArrayLiteral struct {
+	Token token.Token // thre '[' token
+	Elements []Expression
+}
+
+func (al *ArrayLiteral) expressionNode(){}
+func (al *ArrayLiteral) TokenLiteral() string{
+	return al.Token.Literal
+}
+func (al *ArrayLiteral) String() string{
+	var out bytes.Buffer
+
+	elements := []string{}
+	for _,e := range al.Elements {
+		elements = append(elements,e.String())
+	}
+	out.WriteString("[")
+	out.WriteString(strings.Join(elements,", "))
+	out.WriteString("]")
+
+	return out.String()
+}
+
+// Index expression for array
+type IndexExpression struct {
+	Token 	token.Token // the [ token
+	Left 	Expression // the array or identifier
+	Index 	Expression // the index expression
+}
+
+func (ie *IndexExpression) expressionNode() {}
+func (ie *IndexExpression) TokenLiteral() string {
+	return ie.Token.Literal
+}
+func (ie *IndexExpression) String() string {
+	var out bytes.Buffer
+
+	out.WriteString("(")
+	out.WriteString(ie.Left.String())
+	out.WriteString("[")
+	out.WriteString(ie.Index.String())
+	out.WriteString("])")
+
+	return out.String()
+}
+
+//hash table data type
+
+type HashLiteral struct {
+	Token token.Token // the '{' token
+	Pairs map[Expression]Expression
+}
+
+func (hl *HashLiteral) expressionNode() {}
+func (hl *HashLiteral) TokenLiteral() string {
+	return hl.Token.Literal
+}
+func (hl *HashLiteral) String() string {
+	var out bytes.Buffer
+	pairs := []string{}
+
+	for key,value := range hl.Pairs {
+		pairs = append(pairs, key.String()+":"+value.String())
+	}
+	
+	out.WriteString("{")
+	out.WriteString(strings.Join(pairs,", "))
+	out.WriteString("}")
+	return out.String()
+}

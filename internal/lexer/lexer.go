@@ -37,11 +37,11 @@ func (lex *Lexer) NextToken() token.Token {
 			ch := lex.ch
 			lex.readChar()
 			tk = token.Token{Type: token.EQ, Literal: string(ch) + string(lex.ch)}
-			}else{
+		}else{
 				tk = newToken(token.ASSIGN,lex.ch)
 			}
-		case '+':
-			if(lex.peekChar() == '+'){
+	case '+':
+		if(lex.peekChar() == '+'){
 			ch := lex.ch
 			lex.readChar()
 			tk = token.Token{Type: token.PLUS_PLUS, Literal: string(ch) + string(lex.ch)}
@@ -56,6 +56,8 @@ func (lex *Lexer) NextToken() token.Token {
 		}else{
 			tk = newToken(token.MINUS,lex.ch)
 		}
+	case ':':
+		tk = newToken(token.COLON,lex.ch)
 	case '*':
 		tk = newToken(token.ASTERISK,lex.ch)
 	case '/':
@@ -96,15 +98,19 @@ func (lex *Lexer) NextToken() token.Token {
 		tk = newToken(token.LBRACE,lex.ch)
 	case '}':
 		tk = newToken(token.RBRACE,lex.ch)
-	case 0:
-		tk.Literal = ""
-		tk.Type = token.EOF
+	case '[':
+		tk = newToken(token.LBRACKET,lex.ch)
+	case ']':
+		tk = newToken(token.RBRACKET,lex.ch)
 	case '"':
 		tk.Type 	= token.STRING
 		tk.Literal	= lex.readString()
 	case '\'':
 		tk.Type 	= token.STRING
 		tk.Literal	= lex.readString()
+	case 0:
+		tk.Literal = ""
+		tk.Type = token.EOF
 	default:
 		if isLetter(lex.ch) {
 			tk.Literal = lex.readIdentifier()
